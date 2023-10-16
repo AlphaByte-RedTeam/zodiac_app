@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
@@ -27,11 +29,12 @@ class _ZodiacAppState extends State<ZodiacApp> {
   final player = AudioPlayer();
   final tts = FlutterTts();
 
-  void speak(String text) {
-    tts.setLanguage('en-US');
-    tts.setVolume(1);
-    tts.setPitch(1);
-    tts.speak(text);
+  void speak() async {
+    await tts.setLanguage('en-US');
+    await tts.setVolume(1);
+    await tts.setPitch(1);
+
+    if (_zodiacDesc.isNotEmpty) await tts.speak(_zodiacDesc);
   }
 
   void playSound() async {
@@ -49,6 +52,8 @@ class _ZodiacAppState extends State<ZodiacApp> {
     final tanggal = tanggalLahir.day;
 
     playSound();
+    speak();
+    log(_zodiacDesc);
 
     if ((bulan == 3 && tanggal >= 21) || (bulan == 4 && tanggal <= 19)) {
       _zodiak = 'Aries';
@@ -115,8 +120,6 @@ class _ZodiacAppState extends State<ZodiacApp> {
       _zodiacDesc =
           'Pisces is the twelfth zodiac sign and is associated with creativity and imagination. They tend to be compassionate, intuitive, and gentle. Pisces individuals are often artistic and dreamy. They are romantic and sensitive, and they enjoy the arts.';
     }
-
-    speak(_zodiacDesc);
   }
 
   @override
